@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.memo.dto.MemoDto;
+import com.example.memo.dto.MemoRequestDto;
 import com.example.memo.entity.Memo;
 import com.example.memo.repository.MemoRepository;
 
@@ -21,7 +23,7 @@ public class MemoService {
     private final MemoRepository memoRepository;
     private final ModelMapper modelMapper;
 
-    public Long create(MemoDto dto) {
+    public Long create(MemoRequestDto dto) {
 
         // dto -> entity
         Memo memo = modelMapper.map(dto, Memo.class);
@@ -44,9 +46,9 @@ public class MemoService {
 
     }
 
-    public Long update(MemoDto dto) {
+    public Long update(Long id, MemoRequestDto dto) {
         // dto -> entity
-        Memo memo = memoRepository.findById(dto.getId()).get();
+        Memo memo = memoRepository.findById(id).get();
         memo.changeText(dto.getText());
         return memo.getId();
     }

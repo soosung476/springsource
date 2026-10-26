@@ -1,6 +1,5 @@
 package com.example.memo;
 
-import java.util.List;
 import java.util.stream.LongStream;
 
 import org.junit.jupiter.api.Test;
