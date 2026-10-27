@@ -22,8 +22,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = { "orderItems" })
-@Setter
-@Getter 
+// @Setter
+@Getter
 @Entity
 public class Item {
 
@@ -48,5 +48,4 @@ public class Item {
         this.stockQuantity = stockQuantity;
     }
 
-    
 }

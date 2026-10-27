@@ -22,7 +22,7 @@ import lombok.ToString;
 @Builder
 @ToString(exclude = { "orders" })
 @Table(name = "shop_member")
-@Setter
+// @Setter
 @Getter
 @Entity
 public class ShopMember {

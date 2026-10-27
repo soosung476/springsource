@@ -5,10 +5,14 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.example.book.entity.Book;
+import com.example.book.entity.QBook;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long>, QuerydslPredicateExecutor<Book> {
 
     // where isbn = ''
     Book findByIsbn(String isbn);
@@ -40,4 +44,29 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query("SELECT b FROM Book b WHERE b.title like %?1% or b.author like %?2%")
     List<Book> findByTitleAuthor(String title, String author);
+
+    // {}
+    public default Predicate makePredicate(String type, String keyword) {
+        QBook book = QBook.book;
+
+        // title like '%자바%' or writer like '%자바%' or category like '%자바%'
+        // where title like %자바% and id > 0
+        // where author like %자바% and id > 0
+        // where category like %자바% and id > 0
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(book.id.gt(0));
+
+        if (type == null) {
+            return builder;
+        }
+        if (type.equals("t")) {
+            builder.and(book.title.contains(keyword));
+        } else if (type.equals("w")) {
+            builder.and(book.author.contains(keyword));
+        } else if (type.equals("c")) {
+
+        }
+        return builder;
+    }
+
 }

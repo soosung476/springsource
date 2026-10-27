@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.book.dto.BookRequestDto;
+import com.example.book.dto.BookDto;
 import com.example.book.service.BookService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,42 +27,42 @@ public class BookController {
 
     @GetMapping("")
     @Operation(summary = "도서 목록 조회", description = "전체 도서 목록을 조회합니다")
-    public List<BookRequestDto> getBooks() {
+    public List<BookDto> getBooks() {
         return service.readAll();
 
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "도서 조회", description = "특정 도서를 id 기준으로 조회합니다")
-    public BookRequestDto getBookById(@PathVariable Long id) {
+    public BookDto getBookById(@PathVariable Long id) {
         return service.readId(id);
 
     }
 
     @GetMapping("/title")
     @Operation(summary = "도서 조회", description = "특정 도서를 title 기준으로 조회합니다")
-    public BookRequestDto getBookByTitle(String title) {
+    public BookDto getBookByTitle(String title) {
         return service.readTitle(title);
 
     }
 
     @GetMapping("/isbn")
     @Operation(summary = "도서 조회", description = "특정 도서를 isbn 기준으로 조회합니다")
-    public BookRequestDto getBookByIsbn(String isbn) {
+    public BookDto getBookByIsbn(String isbn) {
         return service.readIsbn(isbn);
 
     }
 
     @PostMapping("")
     @Operation(summary = "도서 삽입", description = "특정 도서를 삽입합니다")
-    public Long postBook(@RequestBody BookRequestDto dto) {
+    public Long postBook(@RequestBody BookDto dto) {
         return service.create(dto);
 
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "도서 수정", description = "특정 도서를 수정합니다")
-    public Long putMemo(@PathVariable Long id, @RequestBody BookRequestDto dto) {
+    public Long putMemo(@PathVariable Long id, @RequestBody BookDto dto) {
         dto.setId(id);
         service.update(dto);
         return id;

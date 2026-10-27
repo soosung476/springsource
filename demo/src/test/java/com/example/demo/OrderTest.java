@@ -181,8 +181,41 @@ public class OrderTest {
         System.out.println(itemRepository.findAll(item.name.eq("item1").and(item.price.gt(20000))));
 
         // 주문자가 user1 이고, 현재 상태가 ORDER인 제품
-        System.out.println(orderRepository.findAll(
-                order.member.eq(ShopMember.builder().id(1L).build()).and(order.orderStatus.eq(OrderStatus.ORDER))));
+        // System.out.println(orderRepository.findAll(
+        // order.member.eq(ShopMember.builder().id(1L).build()).and(order.orderStatus.eq(OrderStatus.ORDER))));
 
+    }
+
+    @Test
+    public void membersTest() {
+        List<ShopMember> list = orderRepository.members();
+        System.out.println(list);
+
+        List<Item> list1 = orderRepository.items();
+        System.out.println(list1);
+
+        List<Object[]> list2 = orderRepository.joinTest();
+        for (Object[] objects : list2) {
+            Order order = (Order) objects[0];
+            ShopMember member = (ShopMember) objects[1];
+
+            System.out.println(order);
+            System.out.println(member);
+        }
+        List<Object[]> list3 = orderRepository.subQueryTest();
+        for (Object[] objects : list3) {
+            Order order = (Order) objects[0];
+            ShopMember member = (ShopMember) objects[1];
+            OrderItem orderItem = (OrderItem) objects[2];
+            Long cnt = (Long) objects[3];
+            Long sum = (Long) objects[4];
+
+            System.out.println(order);
+            System.out.println(member);
+            System.out.println(orderItem);
+            System.out.println(cnt);
+            System.out.println(sum);
+
+        }
     }
 }

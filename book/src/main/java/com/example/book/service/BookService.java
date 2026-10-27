@@ -5,9 +5,15 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.book.dto.BookRequestDto;
+import com.example.book.dto.BookDto;
+import com.example.book.dto.PageRequestDto;
+import com.example.book.dto.PageResultDto;
 import com.example.book.entity.Book;
 import com.example.book.repository.BookRepository;
 
@@ -20,42 +26,58 @@ public class BookService {
     private final ModelMapper mapper;
     // CRUD 호출
 
-    public Long create(BookRequestDto dto) {
+    public Long create(BookDto dto) {
         // dto => entity (ModelMapper)
         // Book book = mapper.map(dto, Book.class);
         // bookRepository.save(book)
         return bookRepository.save(mapper.map(dto, Book.class)).getId();
     }
 
-    public BookRequestDto readTitle(String title) {
+    public PageResultDto<BookDto> list(PageRequestDto pageRequestDto) {
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(),
+                Sort.by("id").descending());
+        Page<Book> result = bookRepository
+                .findAll(bookRepository.makePredicate(pageRequestDto.getType(), pageRequestDto.getKeyword()), pageable);
+
+        // entity => dto 변경
+        List<BookDto> dtoList = result.get().map(book -> mapper.map(book, BookDto.class)).collect(Collectors.toList());
+
+        long totalCount = result.getTotalElements();
+
+        return PageResultDto.<BookDto>withAll().dtoList(dtoList).totalCount(totalCount).pageRequestDto(pageRequestDto)
+                .build();
+
+    }
+
+    public BookDto readTitle(String title) {
         Book book = bookRepository.findByTitle(title).orElseThrow();
         // entity => dto
-        return mapper.map(book, BookRequestDto.class);
+        return mapper.map(book, BookDto.class);
     }
 
-    public BookRequestDto readIsbn(String isbn) {
+    public BookDto readIsbn(String isbn) {
         Book book = bookRepository.findByIsbn(isbn);
         // entity => dto
-        return mapper.map(book, BookRequestDto.class);
+        return mapper.map(book, BookDto.class);
     }
 
-    public BookRequestDto readId(Long id) {
+    public BookDto readId(Long id) {
         Book book = bookRepository.findById(id).orElseThrow();
 
         // entity => dto
-        return mapper.map(book, BookRequestDto.class);
+        return mapper.map(book, BookDto.class);
 
     }
 
-    public List<BookRequestDto> readAll() {
+    public List<BookDto> readAll() {
         List<Book> books = bookRepository.findAll();
 
         // entity => dto
-        return books.stream().map(book -> mapper.map(book, BookRequestDto.class)).collect(Collectors.toList());
+        return books.stream().map(book -> mapper.map(book, BookDto.class)).collect(Collectors.toList());
 
     }
 
-    public void update(BookRequestDto dto) {
+    public void update(BookDto dto) {
         Book book = bookRepository.findById(dto.getId()).orElseThrow();
         book.changePrice(dto.getPrice());
         bookRepository.save(book);

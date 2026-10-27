@@ -20,7 +20,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = { "order", "item" })
-@Setter
+// @Setter
 @Getter
 @Entity
 public class OrderItem {
