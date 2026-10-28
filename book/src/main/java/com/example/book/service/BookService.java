@@ -34,7 +34,7 @@ public class BookService {
     }
 
     public PageResultDto<BookDto> list(PageRequestDto pageRequestDto) {
-        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(),
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage() - 1, pageRequestDto.getSize(),
                 Sort.by("id").descending());
         Page<Book> result = bookRepository
                 .findAll(bookRepository.makePredicate(pageRequestDto.getType(), pageRequestDto.getKeyword()), pageable);

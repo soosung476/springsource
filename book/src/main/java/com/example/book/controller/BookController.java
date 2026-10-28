@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.book.dto.BookDto;
+import com.example.book.dto.PageRequestDto;
+import com.example.book.dto.PageResultDto;
 import com.example.book.service.BookService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,8 +29,9 @@ public class BookController {
 
     @GetMapping("")
     @Operation(summary = "도서 목록 조회", description = "전체 도서 목록을 조회합니다")
-    public List<BookDto> getBooks() {
-        return service.readAll();
+    public PageResultDto<BookDto> getBooks(PageRequestDto dto) {
+        PageResultDto<BookDto> result = service.list(dto);
+        return result;
 
     }
 
